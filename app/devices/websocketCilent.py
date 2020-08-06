@@ -3,6 +3,7 @@ from flask import Blueprint, request
 from .. import socketio
 from logzero import logger
 from app.tables.Data import *
+from app.common.common import *
 from app import db
 
 websocketClient = Blueprint('websocketClient', __name__)
@@ -57,6 +58,15 @@ def send_message(data):
     if data.id:
         socketio.emit('server_response', json.dumps({'code': 0, 'command': 'push_message', 'content': content}),
                       namespace='/ws')
+        robot_message = getRepley(message, user_sid)
+        if robot_message:
+            robot_content = {
+                'id': time.time(),
+                'message': robot_message,
+                'avatar': 'http://file.tuling123.com/upload/image/202008/15c4530d-8181-4477-bcca-dfae4efefe2f.jpeg',
+            }
+            socketio.emit('server_response', json.dumps({'code': 0, 'command': 'push_message', 'content': robot_content}),
+                         namespace='/ws')
 
 @socketio.on('add_user', namespace='/ws')
 def add_user(data):

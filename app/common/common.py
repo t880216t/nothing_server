@@ -1,7 +1,6 @@
 from pyDes import des, CBC, PAD_PKCS5
 from app import app
-from app.tables.Diff import *
-import binascii, hashlib, os, shlex, subprocess, random, zipfile, datetime, json, time, shutil
+import binascii, hashlib, os, requests, json, datetime, json, time, shutil
 
 def encrypt_name(name, salt=None, encryptlop=30):
   if not salt:
@@ -64,3 +63,27 @@ def getDesUserId(enUserId):
 def time2data(time_sj):
     time_str = datetime.datetime.fromtimestamp(time_sj)
     return time_str
+
+def getRepley(message, user_id):
+    url = 'http://openapi.tuling123.com/openapi/api/v2'
+    headers = {
+        'Content-Type': 'application/json'
+    }
+    data = {
+        "reqType": 0,
+        "perception": {
+            "inputText": {
+                "text": message
+            },
+        },
+        "userInfo": {
+            "apiKey": app.config['tuling_api_key'],
+            "userId": user_id
+        }
+    }
+    res = requests.post(url,headers=headers,data=json.dumps(data))
+    resp = res.json()
+    if resp['results'] and len(resp['results']) > 0:
+        return resp['results'][0]['values']['text']
+    else:
+        return None
