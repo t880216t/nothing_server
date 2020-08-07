@@ -9,7 +9,7 @@ app.config['SECRET_KEY']= "thisisadfsacoolpaltpalt" #设置为24位的字符,每
 app.config['PERMANENT_SESSION_LIFETIME']=timedelta(days=1) #设置session的保存时间。
 app.config["SQLALCHEMY_DATABASE_URI"] = 'sqlite:///../db/data.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-
+app.config['tuling_api_key'] = 'xcvxvx'
 '''
 数据库对象创建
 '''
