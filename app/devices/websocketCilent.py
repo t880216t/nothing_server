@@ -25,6 +25,15 @@ def client_connect():
                   json.dumps({'code': 0, 'command': 'set_config', 'content': content}),
                   namespace='/ws')
 
+    robot_content = {
+        'id': time.time(),
+        'message': '大家好，我是无人机。平日老百姓都管我叫大善人，你要是无聊我们可以陪你聊聊天。播放没有声音的话，请点击网址前的感叹号，给我播放声音的权限。',
+        'avatar': 'http://file.tuling123.com/upload/image/202008/15c4530d-8181-4477-bcca-dfae4efefe2f.jpeg',
+        'addTime': time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(time.time())),
+    }
+    socketio.emit('server_response', json.dumps({'code': 0, 'command': 'push_message', 'content': robot_content}),
+                  namespace='/ws')
+
 @socketio.on('disconnect', namespace='/ws')
 def client_disconnect():
     logger.warning(str(request.sid) + '=> Client Disconnected ')
@@ -54,6 +63,7 @@ def send_message(data):
         'id': data.id,
         'message': message,
         'avatar': user_avatar,
+        'addTime': data.add_time,
     }
     if data.id:
         socketio.emit('server_response', json.dumps({'code': 0, 'command': 'push_message', 'content': content}),
@@ -64,6 +74,7 @@ def send_message(data):
                 'id': time.time(),
                 'message': robot_message,
                 'avatar': 'http://file.tuling123.com/upload/image/202008/15c4530d-8181-4477-bcca-dfae4efefe2f.jpeg',
+                'addTime': time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(time.time())),
             }
             socketio.emit('server_response', json.dumps({'code': 0, 'command': 'push_message', 'content': robot_content}),
                          namespace='/ws')
